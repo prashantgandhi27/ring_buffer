@@ -2,13 +2,13 @@
 *  \author     Prashant Gandhi
 *  \date       02/14/2022
 ********************************************************************************
-*  \file       ring_buffer.h
+*  \file       ring_cfg.h
 *
-*  \brief      TODO
+*  \brief      Defines for ring buffer.
 *
-*  \details    TODO
+*  \details    None
 *
-*  \note       TODO
+*  \note       None
 *
 *******************************************************************************/
 #ifndef __RING_CFG_H__
@@ -19,6 +19,7 @@ extern "C"
 {
 #endif
 
+/* Size of the ring buffer */
 #define  RING_BUFFER_SIZE  (10U)
 
 #ifdef __cplusplus
