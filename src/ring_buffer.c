@@ -4,18 +4,26 @@
 ********************************************************************************
 *  \file       ring_buffer.c
 *
-*  \brief      TODO
+*  \brief      This files contains ring buffer function definations.
 *
-*  \details    TODO
+*  \details    This version of ring buffer does not make use of buffer
+*              size to check whether ring is empty or full. Instead it reserves
+*              one space for that. Meaning, when ring buffer size is given 10,
+*              ring can hold only 9 elements in buffer at a time. 
 *
-*  \note       TODO
+*  \note       VERSION - 0.1.0
 *
 *******************************************************************************/
+#include <assert.h>
 
 #include "ring_buffer.h"
 
+/******************************************************************************/
 RING_BUFFER *CreateRingBuffer(uint32_t *buffer, uint32_t ringSize)
 {
+    assert(buffer != NULL);
+    assert(ringSize > 0);
+
     RING_BUFFER *localRingPtr = (RING_BUFFER *)malloc(sizeof(RING_BUFFER));
     localRingPtr->buffer = buffer;
     localRingPtr->mFront = 0;
@@ -25,8 +33,11 @@ RING_BUFFER *CreateRingBuffer(uint32_t *buffer, uint32_t ringSize)
     return localRingPtr;
 }
 
+/******************************************************************************/
 bool RingInsert(RING_BUFFER *ringBuffer, uint32_t data)
 {
+    assert(ringBuffer != NULL);
+
     bool status = false;
 
     if (RingFull(ringBuffer) == false)
@@ -40,8 +51,11 @@ bool RingInsert(RING_BUFFER *ringBuffer, uint32_t data)
     return status;
 }
 
+/******************************************************************************/
 bool RingRemove(RING_BUFFER *ringBuffer, uint32_t *data)
 {
+    assert(ringBuffer != NULL);
+
     bool status =  false;
 
     if (RingEmpty(ringBuffer) == false)
@@ -55,8 +69,11 @@ bool RingRemove(RING_BUFFER *ringBuffer, uint32_t *data)
     return status;
 }
 
+/******************************************************************************/
 bool RingFull(RING_BUFFER *ringBuffer)
 {
+    assert(ringBuffer != NULL);
+
     bool status = false;
 
     if (((ringBuffer->mRear + 1) % ringBuffer->size) == ringBuffer->mFront)
@@ -67,8 +84,11 @@ bool RingFull(RING_BUFFER *ringBuffer)
     return status;
 }
 
+/******************************************************************************/
 bool RingEmpty(RING_BUFFER *ringBuffer)
 {
+    assert(ringBuffer != NULL);
+
     bool status = false;
 
     if (ringBuffer->mRear == ringBuffer->mFront)
