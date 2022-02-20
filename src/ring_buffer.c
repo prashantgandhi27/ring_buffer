@@ -21,7 +21,7 @@
 /******************************************************************************/
 RING_BUFFER *CreateRingBuffer(uint32_t *buffer, uint32_t ringSize)
 {
-    assert(buffer != NULL);
+    assert(buffer != RING_NULL);
     assert(ringSize > 0);
 
     RING_BUFFER *localRingPtr = (RING_BUFFER *)malloc(sizeof(RING_BUFFER));
@@ -36,7 +36,7 @@ RING_BUFFER *CreateRingBuffer(uint32_t *buffer, uint32_t ringSize)
 /******************************************************************************/
 bool RingInsert(RING_BUFFER *ringBuffer, uint32_t data)
 {
-    assert(ringBuffer != NULL);
+    assert(ringBuffer != RING_NULL);
 
     bool status = false;
 
@@ -54,7 +54,7 @@ bool RingInsert(RING_BUFFER *ringBuffer, uint32_t data)
 /******************************************************************************/
 bool RingRemove(RING_BUFFER *ringBuffer, uint32_t *data)
 {
-    assert(ringBuffer != NULL);
+    assert(ringBuffer != RING_NULL);
 
     bool status =  false;
 
@@ -70,9 +70,59 @@ bool RingRemove(RING_BUFFER *ringBuffer, uint32_t *data)
 }
 
 /******************************************************************************/
+uint32_t RingUsedCount(RING_BUFFER *ringBuffer)
+{
+    assert(ringBuffer != RING_NULL);
+
+    uint32_t count = 0;
+
+    if (RingFull(ringBuffer) == true)
+    {
+        count = ringBuffer->size - 1;
+    }
+    else if (RingEmpty(ringBuffer) == true)
+    {
+        count = 0;
+    }
+    else
+    {
+        uint32_t localIdx = ringBuffer->mFront;
+
+        while (localIdx != ringBuffer->mRear)
+        {
+            count++;
+            localIdx = (localIdx + 1) % ringBuffer->size;
+        }
+    }
+
+    return count;
+}
+
+/******************************************************************************/
+bool RingClear(RING_BUFFER *ringBuffer)
+{
+    assert(ringBuffer != RING_NULL);
+
+    bool status =  false;
+    uint32_t data = 0;
+
+    while (!RingEmpty(ringBuffer))
+    {
+        RingRemove(ringBuffer, &data);
+    }
+
+    if(RingEmpty(ringBuffer) == true)
+    {
+        status = true;
+    }
+
+    return status;
+}
+
+/******************************************************************************/
 bool RingFull(RING_BUFFER *ringBuffer)
 {
-    assert(ringBuffer != NULL);
+    assert(ringBuffer != RING_NULL);
 
     bool status = false;
 
@@ -87,7 +137,7 @@ bool RingFull(RING_BUFFER *ringBuffer)
 /******************************************************************************/
 bool RingEmpty(RING_BUFFER *ringBuffer)
 {
-    assert(ringBuffer != NULL);
+    assert(ringBuffer != RING_NULL);
 
     bool status = false;
 

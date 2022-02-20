@@ -5,7 +5,7 @@
 
 uint32_t Buffer[RING_BUFFER_SIZE] = {0};
 
-void *RingBufferPtr;
+void *RingBufferPtr = RING_NULL;
 
 int main(void)
 {
@@ -14,16 +14,24 @@ int main(void)
 
     RingBufferPtr = CreateRingBuffer(Buffer, RING_BUFFER_SIZE);
 
-    while (RingFull(RingBufferPtr) == false)
+    while (!RingFull(RingBufferPtr))
     {
-        RingInsert(RingBufferPtr, insertData);
-        insertData++;
+        RingInsert(RingBufferPtr, insertData++);
     }
 
-    while (RingEmpty(RingBufferPtr) == false)
+    printf("Total elements in ring = %d \n", RingUsedCount(RingBufferPtr));
+
+    RingClear(RingBufferPtr);
+
+    printf("Total elements in ring after clear = %d \n", RingUsedCount(RingBufferPtr));
+
+    free(RingBufferPtr);
+
+    RingBufferPtr = RING_NULL;
+
+    if (RING_NULL == RingBufferPtr)
     {
-        RingRemove(RingBufferPtr, &removeData);
-        printf("Data = %d \n", removeData);
+        printf("Ring successfully deleted. \n");
     }
 
     return 0;

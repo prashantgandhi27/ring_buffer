@@ -22,6 +22,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "ring_cfg.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -73,6 +75,29 @@ bool RingInsert(RING_BUFFER *ringBuffer, uint32_t data);
 *
 ******************************************************************************/
 bool RingRemove(RING_BUFFER *ringBuffer, uint32_t *data);
+
+/*!*****************************************************************************
+*  \fn         RingUsedCount(RING_BUFFER *ringBuffer)
+*  \brief      Provides count of element present in the ring.
+*
+*  \param[in]  ringBuffer - pointer returned from CreateRingBuffer()
+*
+*  \retval     Number of elements currently present in ring.
+*
+******************************************************************************/
+uint32_t RingUsedCount(RING_BUFFER *ringBuffer);
+
+/*!*****************************************************************************
+*  \fn         RingClear(RING_BUFFER *ringBuffer)
+*  \brief      Removes all elements from the ring.
+*
+*  \param[in]  ringBuffer - pointer returned from CreateRingBuffer()
+*
+*  \retval     false - ring clear operation failed.
+*              true  - all elements removed successfully.
+*
+******************************************************************************/
+bool RingClear(RING_BUFFER *ringBuffer);
 
 /*!*****************************************************************************
 *  \fn         bool RingFull(RING_BUFFER *ringBuffer)

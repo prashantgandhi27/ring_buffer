@@ -22,6 +22,9 @@ extern "C"
 /* Size of the ring buffer */
 #define  RING_BUFFER_SIZE  (10U)
 
+/* Define NULL pointer */
+#define RING_NULL          (void *)(0)
+
 #ifdef __cplusplus
 }
 #endif
