@@ -11,7 +11,7 @@
 *              one space for that. Meaning, when ring buffer size is given 10,
 *              ring can hold only 9 elements in buffer at a time. 
 *
-*  \note       VERSION - 0.1.0
+*  \note       VERSION - 0.2.0
 *
 *******************************************************************************/
 #include <assert.h>
@@ -43,101 +43,103 @@ void *CreateRingBuffer(void *buffer, uint32_t ringSize)
 /******************************************************************************/
 bool RingInsert(void *ringBuffer, RING_BUFFER_TYPE data)
 {
-    bool status = false;
+   bool status = false;
 
-    if (RingFull(ringBuffer) == false)
-    {
-        ((RING_BUFFER *)ringBuffer)->mRear = (((RING_BUFFER *)ringBuffer)->mRear + 1) % ((RING_BUFFER *)ringBuffer)->size;
-        ((RING_BUFFER *)ringBuffer)->buffer[((RING_BUFFER *)ringBuffer)->mRear] = data;
+   if (RingFull(ringBuffer) == false)
+   {
+      ((RING_BUFFER *)ringBuffer)->mRear = 
+         (((RING_BUFFER *)ringBuffer)->mRear + 1) % ((RING_BUFFER *)ringBuffer)->size;
+      ((RING_BUFFER *)ringBuffer)->buffer[((RING_BUFFER *)ringBuffer)->mRear] = data;
 
-        status = true;
-    }
+       status = true;
+   }
 
-    return status;
+   return status;
 }
 
 /******************************************************************************/
 bool RingRemove(void *ringBuffer, uint32_t *data)
 {
-    bool status =  false;
+   bool status =  false;
 
-    if (RingEmpty(ringBuffer) == false)
-    {
-        ((RING_BUFFER *)ringBuffer)->mFront = (((RING_BUFFER *)ringBuffer)->mFront + 1) % ((RING_BUFFER *)ringBuffer)->size;
-        *data = ((RING_BUFFER *)ringBuffer)->buffer[((RING_BUFFER *)ringBuffer)->mFront];
+   if (RingEmpty(ringBuffer) == false)
+   {
+      ((RING_BUFFER *)ringBuffer)->mFront = 
+         (((RING_BUFFER *)ringBuffer)->mFront + 1) % ((RING_BUFFER *)ringBuffer)->size;
+      *data = ((RING_BUFFER *)ringBuffer)->buffer[((RING_BUFFER *)ringBuffer)->mFront];
 
-        status = true;
-    }
+       status = true;
+   }
 
-    return status;
+   return status;
 }
 
 /******************************************************************************/
 uint32_t RingUsedCount(void *ringBuffer)
 {
-    uint32_t count = 0;
+   uint32_t count = 0;
 
-    if (RingFull(ringBuffer) == true)
-    {
-        count = ((RING_BUFFER *)ringBuffer)->size - 1;
-    }
-    else if (RingEmpty(ringBuffer) == true)
-    {
-        count = 0;
-    }
-    else
-    {
-        uint32_t localIdx = ((RING_BUFFER *)ringBuffer)->mFront;
+   if (RingFull(ringBuffer) == true)
+   {
+      count = ((RING_BUFFER *)ringBuffer)->size - 1;
+   }
+   else if (RingEmpty(ringBuffer) == true)
+   {
+      count = 0;
+   }
+   else
+   {
+      uint32_t localIdx = ((RING_BUFFER *)ringBuffer)->mFront;
 
-        while (localIdx != ((RING_BUFFER *)ringBuffer)->mRear)
-        {
-            count++;
-            localIdx = (localIdx + 1) % ((RING_BUFFER *)ringBuffer)->size;
-        }
-    }
+      while (localIdx != ((RING_BUFFER *)ringBuffer)->mRear)
+      {
+         count++;
+         localIdx = (localIdx + 1) % ((RING_BUFFER *)ringBuffer)->size;
+      }
+   }
 
-    return count;
+   return count;
 }
 
 /******************************************************************************/
 bool RingClear(void *ringBuffer)
 {
-    bool status =  false;
-    uint32_t data = 0;
+   bool status =  false;
+   uint32_t data = 0;
 
-    ((RING_BUFFER *)ringBuffer)->mFront = 0;
-    ((RING_BUFFER *)ringBuffer)->mRear = 0;
+   ((RING_BUFFER *)ringBuffer)->mFront = 0;
+   ((RING_BUFFER *)ringBuffer)->mRear = 0;
 
-    if(RingEmpty(ringBuffer) == true)
-    {
-        status = true;
-    }
+   if(RingEmpty(ringBuffer) == true)
+   {
+      status = true;
+   }
 
-    return status;
+   return status;
 }
 
 /******************************************************************************/
 bool RingFull(void *ringBuffer)
 {
-    bool status = false;
+   bool status = false;
 
-    if (((((RING_BUFFER *)ringBuffer)->mRear + 1) % ((RING_BUFFER *)ringBuffer)->size) == ((RING_BUFFER *)ringBuffer)->mFront)
-    {
-        status = true;
-    }
+   if (((((RING_BUFFER *)ringBuffer)->mRear + 1) % ((RING_BUFFER *)ringBuffer)->size) == ((RING_BUFFER *)ringBuffer)->mFront)
+   {
+      status = true;
+   }
 
-    return status;
+   return status;
 }
 
 /******************************************************************************/
 bool RingEmpty(void *ringBuffer)
 {
-    bool status = false;
+   bool status = false;
 
-    if (((RING_BUFFER *)ringBuffer)->mRear == ((RING_BUFFER *)ringBuffer)->mFront)
-    {
-        status =  true;
-    }
+   if (((RING_BUFFER *)ringBuffer)->mRear == ((RING_BUFFER *)ringBuffer)->mFront)
+   {
+      status =  true;
+   }
 
-    return status;
+   return status;
 }

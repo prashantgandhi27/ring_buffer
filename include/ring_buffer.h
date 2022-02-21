@@ -11,7 +11,7 @@
 *              one space for that. Meaning, when ring buffer size is given 10,
 *              ring can hold only 9 elements in buffer at a time. 
 *
-*  \note       VERSION - 0.1.0
+*  \note       VERSION - 0.2.0
 *
 *******************************************************************************/
 #ifndef __RING_BUFFER_H__
