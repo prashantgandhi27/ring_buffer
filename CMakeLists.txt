@@ -9,6 +9,8 @@ project(ring_buffer
 
 project(ring_buffer)
 
+set(CMAKE_C_STANDARD 11)
+
 add_library(ring_buffer src/ring_buffer.c)
 
 target_include_directories(${PROJECT_NAME}

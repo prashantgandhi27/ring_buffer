@@ -14,13 +14,21 @@
 #ifndef __RING_CFG_H__
 #define __RING_CFG_H__
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
+/* Type of the ring buffer */
+typedef uint32_t RING_BUFFER_TYPE;
+
 /* Size of the ring buffer */
 #define  RING_BUFFER_SIZE  (10U)
+
+/* Define NULL pointer */
+#define RING_NULL          (void *)(0)
 
 #ifdef __cplusplus
 }
