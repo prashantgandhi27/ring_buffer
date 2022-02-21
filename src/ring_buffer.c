@@ -18,14 +18,21 @@
 
 #include "ring_buffer.h"
 
-/******************************************************************************/
-RING_BUFFER *CreateRingBuffer(uint32_t *buffer, uint32_t ringSize)
+typedef struct ring_buffer
 {
-    assert(buffer != RING_NULL);
+   RING_BUFFER_TYPE *buffer;
+   uint32_t mFront;
+   uint32_t mRear;
+   uint32_t size;
+} RING_BUFFER;
+
+/******************************************************************************/
+void *CreateRingBuffer(void *buffer, uint32_t ringSize)
+{
     assert(ringSize > 0);
 
     RING_BUFFER *localRingPtr = (RING_BUFFER *)malloc(sizeof(RING_BUFFER));
-    localRingPtr->buffer = buffer;
+    localRingPtr->buffer = (RING_BUFFER_TYPE *)buffer;
     localRingPtr->mFront = 0;
     localRingPtr->mRear = 0;
     localRingPtr->size = ringSize;
@@ -34,16 +41,14 @@ RING_BUFFER *CreateRingBuffer(uint32_t *buffer, uint32_t ringSize)
 }
 
 /******************************************************************************/
-bool RingInsert(RING_BUFFER *ringBuffer, uint32_t data)
+bool RingInsert(void *ringBuffer, RING_BUFFER_TYPE data)
 {
-    assert(ringBuffer != RING_NULL);
-
     bool status = false;
 
     if (RingFull(ringBuffer) == false)
     {
-        ringBuffer->mRear = (ringBuffer->mRear + 1) % ringBuffer->size;
-        ringBuffer->buffer[ringBuffer->mRear] = data;
+        ((RING_BUFFER *)ringBuffer)->mRear = (((RING_BUFFER *)ringBuffer)->mRear + 1) % ((RING_BUFFER *)ringBuffer)->size;
+        ((RING_BUFFER *)ringBuffer)->buffer[((RING_BUFFER *)ringBuffer)->mRear] = data;
 
         status = true;
     }
@@ -52,16 +57,14 @@ bool RingInsert(RING_BUFFER *ringBuffer, uint32_t data)
 }
 
 /******************************************************************************/
-bool RingRemove(RING_BUFFER *ringBuffer, uint32_t *data)
+bool RingRemove(void *ringBuffer, uint32_t *data)
 {
-    assert(ringBuffer != RING_NULL);
-
     bool status =  false;
 
     if (RingEmpty(ringBuffer) == false)
     {
-        ringBuffer->mFront = (ringBuffer->mFront + 1) % ringBuffer->size;
-        *data = ringBuffer->buffer[ringBuffer->mFront];
+        ((RING_BUFFER *)ringBuffer)->mFront = (((RING_BUFFER *)ringBuffer)->mFront + 1) % ((RING_BUFFER *)ringBuffer)->size;
+        *data = ((RING_BUFFER *)ringBuffer)->buffer[((RING_BUFFER *)ringBuffer)->mFront];
 
         status = true;
     }
@@ -70,15 +73,13 @@ bool RingRemove(RING_BUFFER *ringBuffer, uint32_t *data)
 }
 
 /******************************************************************************/
-uint32_t RingUsedCount(RING_BUFFER *ringBuffer)
+uint32_t RingUsedCount(void *ringBuffer)
 {
-    assert(ringBuffer != RING_NULL);
-
     uint32_t count = 0;
 
     if (RingFull(ringBuffer) == true)
     {
-        count = ringBuffer->size - 1;
+        count = ((RING_BUFFER *)ringBuffer)->size - 1;
     }
     else if (RingEmpty(ringBuffer) == true)
     {
@@ -86,12 +87,12 @@ uint32_t RingUsedCount(RING_BUFFER *ringBuffer)
     }
     else
     {
-        uint32_t localIdx = ringBuffer->mFront;
+        uint32_t localIdx = ((RING_BUFFER *)ringBuffer)->mFront;
 
-        while (localIdx != ringBuffer->mRear)
+        while (localIdx != ((RING_BUFFER *)ringBuffer)->mRear)
         {
             count++;
-            localIdx = (localIdx + 1) % ringBuffer->size;
+            localIdx = (localIdx + 1) % ((RING_BUFFER *)ringBuffer)->size;
         }
     }
 
@@ -99,17 +100,13 @@ uint32_t RingUsedCount(RING_BUFFER *ringBuffer)
 }
 
 /******************************************************************************/
-bool RingClear(RING_BUFFER *ringBuffer)
+bool RingClear(void *ringBuffer)
 {
-    assert(ringBuffer != RING_NULL);
-
     bool status =  false;
     uint32_t data = 0;
 
-    while (!RingEmpty(ringBuffer))
-    {
-        RingRemove(ringBuffer, &data);
-    }
+    ((RING_BUFFER *)ringBuffer)->mFront = 0;
+    ((RING_BUFFER *)ringBuffer)->mRear = 0;
 
     if(RingEmpty(ringBuffer) == true)
     {
@@ -120,13 +117,11 @@ bool RingClear(RING_BUFFER *ringBuffer)
 }
 
 /******************************************************************************/
-bool RingFull(RING_BUFFER *ringBuffer)
+bool RingFull(void *ringBuffer)
 {
-    assert(ringBuffer != RING_NULL);
-
     bool status = false;
 
-    if (((ringBuffer->mRear + 1) % ringBuffer->size) == ringBuffer->mFront)
+    if (((((RING_BUFFER *)ringBuffer)->mRear + 1) % ((RING_BUFFER *)ringBuffer)->size) == ((RING_BUFFER *)ringBuffer)->mFront)
     {
         status = true;
     }
@@ -135,13 +130,11 @@ bool RingFull(RING_BUFFER *ringBuffer)
 }
 
 /******************************************************************************/
-bool RingEmpty(RING_BUFFER *ringBuffer)
+bool RingEmpty(void *ringBuffer)
 {
-    assert(ringBuffer != RING_NULL);
-
     bool status = false;
 
-    if (ringBuffer->mRear == ringBuffer->mFront)
+    if (((RING_BUFFER *)ringBuffer)->mRear == ((RING_BUFFER *)ringBuffer)->mFront)
     {
         status =  true;
     }
